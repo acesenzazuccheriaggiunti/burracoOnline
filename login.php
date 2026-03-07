@@ -13,7 +13,6 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 
     //cerco l'utente nel database
     $stmt = $conn->prepare("SELECT * FROM users WHERE nome=?");
-    $stmt = $conn->prepare("SELECT * FROM users WHERE nome=?");
     $stmt->bind_param("s", $nome);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -72,4 +71,5 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 <p>Se non hai un account <a href="register.php">sign up</a></p>
 
 </body>
+
 </html>
