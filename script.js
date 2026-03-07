@@ -39,3 +39,11 @@ if(playBtn){
         window.location.href = 'login.php';
     });
 }
+
+// --- Salva dati profilo (demo) ---
+const saveProfileBtn = document.getElementById('save-profile');
+if(saveProfileBtn){
+    saveProfileBtn.addEventListener('click', () => {
+        alert('Qui in futuro aggiorneremo i dati nel DB tramite updateProfile.php');
+    });
+}
