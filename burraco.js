@@ -35,9 +35,9 @@ function createCardElement(card, options) {
     if (options.faceDown) {
         el.classList.add("face-down");
     } else {
-        el.classList.add(card.isJolly ? "jolly" : (isRed(card.seme) ? "red" : "black"));
+        el.classList.add(card.seme == "jolly" ? "jolly" : (isRed(card.seme) ? "red" : "black"));
 
-        if (card.isJolly) {
+        if (card.seme == "jolly") {
             el.textContent = "JOLLY";
         } else {
             const top = document.createElement("div");
@@ -112,7 +112,7 @@ function onPescaMazzo() {
 }
 
 function onPescaScarti() {
-    if (game.turno !== "player") return;
+    if (game.turno !== "player" || game.discardPile.length === 0) return;
     pescaCarta("scarti");
     selectedIds = [];
     gameLoop();
@@ -132,6 +132,14 @@ function onScarta() {
     scartaCarta(carta);
     selectedIds = [];
     gameLoop();
+}
+
+function onScartiClick() {
+    if (!game.hasDrawn) {
+        onPescaScarti();
+    } else {
+        onScarta();
+    }
 }
 
 // ===== ANIMAZIONE FLIP (posizione prima/dopo il render) =====
@@ -174,11 +182,6 @@ function applicaFlip(vecchiePosizioni) {
 function aggiornaPulsanti() {
     const isPlayerTurn = game.turno === "player";
 
-    document.getElementById("btn-pesca-mazzo").disabled = !isPlayerTurn;
-    document.getElementById("btn-pesca-scarti").disabled = !isPlayerTurn || game.discardPile.length === 0;
-    document.getElementById("btn-crea-combinazione").disabled = !isPlayerTurn || selectedIds.length !== 3;
-    document.getElementById("btn-scarta").disabled = !isPlayerTurn || selectedIds.length !== 1;
-
     document.getElementById("turno-indicator").textContent =
         isPlayerTurn ? "Turno: Player" : "Turno: Bot";
 
@@ -215,7 +218,7 @@ function renderCombinazioni(containerId, combos, who) {
     combos.forEach(combo => {
         const comboEl = document.createElement("div");
         comboEl.className = "combo";
-        combo.forEach(card => {
+        combo.slice().reverse().forEach(card => {
             comboEl.appendChild(createCardElement(card, { faceDown: false, clickable: false }));
         });
         comboEl.addEventListener("click", () => onComboClick(who, combo));
@@ -262,10 +265,9 @@ function gameLoop() {
 }
 
 // ===== AVVIO =====
-document.getElementById("btn-pesca-mazzo").addEventListener("click", onPescaMazzo);
-document.getElementById("btn-pesca-scarti").addEventListener("click", onPescaScarti);
-document.getElementById("btn-crea-combinazione").addEventListener("click", onCreaCombinazione);
-document.getElementById("btn-scarta").addEventListener("click", onScarta);
+document.getElementById("stack-pile").addEventListener("click", onPescaMazzo);
+document.getElementById("discard-pile").addEventListener("click", onScartiClick);
+document.getElementById("player-table").addEventListener("click", onCreaCombinazione);
 
 inizializzaPartita();
 gameLoop();
