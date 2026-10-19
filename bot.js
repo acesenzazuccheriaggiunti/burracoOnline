@@ -57,6 +57,19 @@ function contaCarteUtiliScarti(){
             }
         }
     }
+    //o formare una combinazione usando solo le carte degli scarti
+    for (let i = 0; i < game.discardPile.length - 2; i++) {
+        for (let j = i + 1; j < game.discardPile.length - 1; j++) {
+            for (let k = j + 1; k < game.discardPile.length; k++) {
+
+                let tris = [game.discardPile[i], game.discardPile[j], game.discardPile[k]];
+
+                if (controllaCombinazione(tris)) {
+                    carteUtili += 3;
+                }
+            }
+        }
+    }
 
     return carteUtili;
 }
