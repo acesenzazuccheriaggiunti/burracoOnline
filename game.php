@@ -57,10 +57,6 @@ if(!isset($_SESSION['user_id'])){
     </div>
 
     <div class="actions-bar">
-        <button id="btn-pesca-mazzo">Pesca dal mazzo</button>
-        <button id="btn-pesca-scarti">Pesca dagli scarti</button>
-        <button id="btn-crea-combinazione">Crea combinazione</button>
-        <button id="btn-scarta">Scarta</button>
         <button id="btnRestart">Nuova partita</button>
         <a href="home.php" style="color:white; align-self:center;">Torna alla Home</a>
     </div>
