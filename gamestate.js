@@ -34,6 +34,9 @@ let game = {
     },
 
     turno: "player", //capire chi sta giocando
+
+    //per il bot non serve la variabile di stato perche' sappiamo che non cerchera' di barare
+    hasDrawn: false, //serve per sapere se il player ha già pescato in questo turno
 };
 
 //-------------------------------------------------------------------------------------
@@ -75,6 +78,8 @@ function inizializzaPartita(){
         },
 
         turno: "player",
+
+        hasDrawn: false,
     }
 
     let idCounter = 0;
@@ -99,7 +104,7 @@ function inizializzaPartita(){
         } 
     }
 
-    for(let i = 0; i < 5; i++){
+    for(let i = 0; i < 4; i++){
         let card = {
                 id: idCounter++,
                 seme: "jolly",
@@ -137,6 +142,14 @@ function inizializzaPartita(){
 //funzione per pescare
 function pescaCarta(from){
     let who = game.turno;
+
+    if(who == "player"){
+        if(game.hasDrawn){
+            return;
+        }
+        game.hasDrawn = true;
+    }
+
     if(from == "mazzo"){
         game.hand[who].push(game.stack.pop());
     }else{
@@ -151,6 +164,11 @@ function pescaCarta(from){
 //funzione per scartare
 function scartaCarta(which){
     let who = game.turno;
+
+    if(who == "player" && !game.hasDrawn){
+        return;
+    }
+
     if(game.hand[who].length == 1){
         if(!game.hasPickedPozzetto[who]){
             for(let i = 0; i < game.hand[who].length; i++){
@@ -201,6 +219,7 @@ function scartaCarta(which){
 
     if(game.turno == "player"){
         game.turno = "bot";
+        game.hasDrawn = false;
     }else{
         game.turno = "player";
     }
@@ -208,9 +227,24 @@ function scartaCarta(which){
 
 //-------------------------------------------------------------------------------------
 
+//se la mano è vuota dopo una combinazione, prendo subito il pozzetto
+function controllaPozzettoDiretto(){
+    let who = game.turno;
+
+    if(game.hand[who].length == 0 && !game.hasPickedPozzetto[who]){
+        game.hand[who] = game.pozzetto[who];
+        game.hasPickedPozzetto[who] = true;
+    }
+}
+
 //funzione per fare i tris
 function creaCombinazione(carta1, carta2, carta3){
     let who = game.turno;
+
+    if(who == "player" && !game.hasDrawn){
+        return;
+    }
+
     let tris = [carta1, carta2, carta3];
 
     let analisi = analizzaCombinazione(tris);
@@ -226,6 +260,8 @@ function creaCombinazione(carta1, carta2, carta3){
 
         game.table[who].push(analisi.carte); //ordinata
         game.punteggio[who] += calcolaPunteggio(analisi.carte);
+
+        controllaPozzettoDiretto();
     }
 }
 
@@ -234,6 +270,11 @@ function creaCombinazione(carta1, carta2, carta3){
 //funzione per aggiungere carte ai tris (se è di 7 carte diventa burraco (specificare il tipo))
 function aggiungiCombinazione(carta, tris){
     let who = game.turno;
+
+    if(who == "player" && !game.hasDrawn){
+        return;
+    }
+
     let copy;
     for(let i = 0; i < game.table[who].length; i++){
         if (game.table[who][i] == tris) {
@@ -256,6 +297,8 @@ function aggiungiCombinazione(carta, tris){
         }
 
         game.punteggio[who] += calcolaPunteggio(analisi.carte);
+
+        controllaPozzettoDiretto();
     }else{
         game.table[who].push(copy);
         game.punteggio[who] += calcolaPunteggio(copy);
@@ -486,4 +529,6 @@ function calcolaPunteggio(tris){
 //per una nuova partita
 document.getElementById('btnRestart').addEventListener('click', function() {
     inizializzaPartita();
+    selectedIds = [];
+    gameLoop();
 });
