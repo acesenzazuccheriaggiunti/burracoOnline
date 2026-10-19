@@ -24,12 +24,6 @@ It represents the structural foundation of an online game platform, including:
 
 
 
-⚠️ The actual game logic is not implemented yet.  
-
-The focus of this project is backend authentication and database interaction.
-
-
-
 ---
 
 
@@ -49,6 +43,24 @@ The focus of this project is backend authentication and database interaction.
 - Input validation
 
 - Basic frontend structure
+
+
+
+---
+
+
+
+## 🎮 Game Implementation
+
+
+
+The project includes a playable implementation of the Italian card game Burraco, developed as part of the web application.
+
+One of the key features is the implementation of a bot whose decision-making logic is based on my own playing strategy.
+
+Rather than relying on a generic approach, the bot follows a set of strategies and decision-making rules inspired by how I personally play Burraco.
+
+This makes the bot a personalized opponent, reflecting my own approach to evaluating cards and making moves during a game.
 
 
 
